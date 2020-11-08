@@ -45,11 +45,11 @@ merged <- rbind(part_1_dt, part_2_dt)
 merged[, "summed_length (m)" := sum(length), by = c("name", "city")]
 
 # remove duplicate streets in the same city
-ind <- duplicated(merged[,c("code", "fclass", "name", "city")])
+ind <- duplicated(merged[,c("name", "city")])
 data <- data.table(merged[!ind])
 
 # remove suffix from street name
-data$name <- str_remove(data$name, data$suffix)
+data$name <- str_remove(data$name, paste0(" ", data$suffix))
 
 # order columns
 col_order <- c("osm_id", "name", "suffix", "city", "summed_length (m)", 
@@ -58,13 +58,11 @@ col_order <- c("osm_id", "name", "suffix", "city", "summed_length (m)",
 streetname_db <- data[,..col_order]
 
 # export db
-export <- ""
-write.csv2(data, "streetname_db.csv", row.names = F)
+export <- paste0(getwd(), "/streetname_db/export/streetname_db.csv")
+write.csv2(streetname_db, export, row.names = F)
 
 #TODO
-# fclass szerint nem kell groupolni
-# kivenni a szóközöket az utcák nevei után
-# 
+# budapesti utcákat fixelni
 
 
 
